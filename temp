@@ -1,0 +1,39 @@
+  // if (iterationCount < limitIteration) {
+  for (let i = 0; i < num; i++) {
+    let p = particles[i];
+
+    let xIndex = Math.floor(p.x / CELL_SIZE);
+    let yIndex = Math.floor(p.y / CELL_SIZE);
+
+    let n = heighMap[xIndex][yIndex];
+    let magnitude = map(n, 0, 1, 5, 1);
+
+    let latitude = map(p.y, 0, height, -90, 90);
+
+    const WIND_FORCE_SCALE = 0.1;
+    let a;
+    // Westerlies
+    if ((latitude >= 30 && latitude <= 60) || (latitude <= -30 && latitude >= -60)) {
+      if (latitude > 0) a = map(n, 0, 1, 0 - WIND_FORCE_SCALE, 0);
+      else a = map(n, 0, 1, 0 + WIND_FORCE_SCALE, 0);
+      stroke('red');
+    }
+    // Trade Winds or Polar Easterlies
+    else {
+      if (latitude > 0) a = map(n, 0, 1, PI - WIND_FORCE_SCALE, PI);
+      else a = map(n, 0, 1, PI + WIND_FORCE_SCALE, PI);
+      stroke('green');
+    }
+    angle = a;
+
+    p.x += magnitude * cos(a);
+    p.y += magnitude * sin(a);
+
+    if (!onScreen(p)) {
+      p.x = random(width);
+      p.y = random(height);
+    }
+
+    strokeWeight(3);
+    point(p.x, p.y);
+  }
